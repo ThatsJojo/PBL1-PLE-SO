@@ -1,15 +1,21 @@
 package pbl.view;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import pbl.controller.ArquivoController;
+import pbl.controller.ThreadController;
+import pbl.util.Contador;
 import pbl.util.NotTrackedFileException;
 
 
 public class PBLPLESO {
     public static void main(String[] args) {
+        System.out.println("Sistema iniciado no tempo: "+Contador.getInstance().getTime());
         ArquivoController arquivoController;
+        ThreadController t =  ThreadController.getInstance();
         try {
-            arquivoController = new ArquivoController(3);
+            arquivoController = ArquivoController.getInstance();
         } catch (IOException ex) {
             System.out.println("Impossível criar arquivos.");
             System.out.println("Sistema Fechado");
@@ -47,7 +53,9 @@ public class PBLPLESO {
             System.out.println("Arquivo não trackeado 2");
         } catch (IOException ex) {
             System.out.println("Arquivo vazio");
-        }            
+        } 
+        
+        //Contador.getInstance().interrupt();
     }
     
 }

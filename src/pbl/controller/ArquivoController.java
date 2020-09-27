@@ -17,8 +17,17 @@ import pbl.model.Arquivo;
 public class ArquivoController {
     private final ArrayList<Arquivo> arquivos;
     private static IOController ioController;
+    private static ArquivoController arquivoController;
     
-    public ArquivoController(int nArquivos) throws IOException{
+    public static synchronized ArquivoController getInstance() throws IOException{
+        if(arquivoController == null){
+            arquivoController = new ArquivoController(3);
+            return arquivoController;
+        }
+        return arquivoController;
+    }
+    
+    private ArquivoController(int nArquivos) throws IOException{
         arquivos = new ArrayList<>(nArquivos);
         if(ArquivoController.ioController == null)
             ArquivoController.ioController = new IOController();

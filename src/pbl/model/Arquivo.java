@@ -1,25 +1,31 @@
 package pbl.model;
 
+import java.util.LinkedList;
 import java.util.Objects;
 import java.util.Observable;
+import java.util.Observer;
 
 public class Arquivo extends Observable{
     private final String nome;
     private long lastModify;
     private String conteudo;
+    private final LinkedList<Observer> clientes;
     
     public Arquivo(String nome, long lastModify){
         this.nome = nome;
         this.lastModify = lastModify;
+        this.clientes = new LinkedList<>();
     }
 
     public long getLastModify() {
         return lastModify;
     }
+    
+    
 
     public void setLastModify(long lastModify) {
-        setChanged();
-        notifyObservers();
+        this.setChanged();
+        this.notifyObservers();
         this.lastModify = lastModify;
     }
 

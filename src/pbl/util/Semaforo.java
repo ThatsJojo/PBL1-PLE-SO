@@ -3,13 +3,10 @@ package pbl.util;
 public class Semaforo{
     private int flag;
     private final int resources;
+    private static Semaforo uniqueInstance;
     
-    public Semaforo(){
-        resources = 1;
-    }
-    
-    public Semaforo(int number){
-        resources = number;
+    public Semaforo(int resources){
+        this.resources = resources;
     }
     
     public void down(){
