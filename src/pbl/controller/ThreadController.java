@@ -48,16 +48,18 @@ public class ThreadController {
                     try{    
                         Conexao a = conexoesProntas.removeFirst();
                         Thread.sleep(200);
-                        if(a.readConexao()){
-                            a.conectar(ArquivoController.getInstance().getArquivoLeitura());
-                            a.start();
-                        }else{
-                            a.conectar(ArquivoController.getInstance().getArquivoEscrita());                           
-                            a.start();
-                            ultima = a;
-                        }
+                        a.start();
+                        ultima = a;
+//                        if(a.readConexao()){
+//                            a.conectar(ArquivoController.getInstance().getArquivoLeitura());
+//                            a.start();
+//                        }else{
+//                            a.conectar(ArquivoController.getInstance().getArquivoEscrita());                           
+//                            a.start();
+//                            ultima = a;
+//                        }
                     }
-                    catch(NoSuchElementException | InterruptedException | IOException ex){}
+                    catch(NoSuchElementException | InterruptedException ex){}
                 }
                 try {
                     Thread.sleep((ultima.getTempoExecucao()+4)*1000);

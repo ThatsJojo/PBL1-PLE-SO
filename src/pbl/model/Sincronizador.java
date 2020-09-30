@@ -1,9 +1,7 @@
 package pbl.model;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.logging.Level;
@@ -13,7 +11,7 @@ import pbl.util.Contador;
 import pbl.util.NotTrackedFileException;
 import pbl.util.Semaforo;
 
-public class Sincronizador extends Thread implements Observer{
+public class Sincronizador extends Thread {
     private static Sincronizador sincronizador;
     private static String conteudo;
     
@@ -42,10 +40,8 @@ public class Sincronizador extends Thread implements Observer{
                             System.out.println("Copiando conteúdo de "+arquivo.getNome()+" para "+arq.getNome()+
                                     " no tempo "+Contador.getInstance().getTime());
                             try {
-                                ArquivoController.getInstance().escreverArquivo(arq.getNome(), conteudo);
-                            } catch (IOException | NotTrackedFileException ex) {
-                                Logger.getLogger(Sincronizador.class.getName()).log(Level.SEVERE, null, ex);
-                            }
+                                ArquivoController.getInstance().escreverArquivo(arq.getNome(), arquivo.getConteudo());
+                            } catch (IOException | NotTrackedFileException ex) {}
                         }
                     });
                 }
@@ -59,9 +55,9 @@ public class Sincronizador extends Thread implements Observer{
     }
 
     
-    
-    @Override
-    public void update(Observable Arquivo, Object Conteudo) {
-        conteudo = (String) Conteudo;
-    }   
+//    
+//    @Override
+//    public void update(Observable Arquivo, Object Conteudo) {
+//        conteudo = (String) Conteudo;
+//    }   
 }

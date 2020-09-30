@@ -41,7 +41,7 @@ public class ArquivoController implements Observer{
     
     private static void cadastrarObservers(){
         arquivos.forEach((arquivo)->{
-            arquivo.addObserver(Sincronizador.getInstance());
+            //arquivo.addObserver(Sincronizador.getInstance());
             arquivo.addObserver(arquivoController);
         });
     }
@@ -76,8 +76,9 @@ public class ArquivoController implements Observer{
 
     @Override
     public void update(Observable arquivo, Object conteudo) {
-        System.out.println("\n-----Recurso Liberado: " + ((Arquivo)arquivo).getNome()+" modificado");
-        System.out.println("---------------Recurso Liberado---------------");
+        System.out.println("-------------------------------------------------------------------");
+        System.out.println("O " + ((Arquivo)arquivo).getNome()+" foi modificado. A escrita será liberada após a sincronização");
+        System.out.println("-------------------------------------------------------------------");
         Sincronizador.getInstance().start(); //O Up é feito no sincronizador.
         System.out.println(conteudo);
         try {
@@ -85,7 +86,7 @@ public class ArquivoController implements Observer{
         } catch (IOException ex) {
             System.out.println("Escrita não pôde ser realizada.");
         }
-        System.out.println("----------------------------------------------\n");
+        System.out.println("-------------------------------------------------------------------");
     }
     
     public boolean arquivoAtualizado(Arquivo arquivo) throws FileNotFoundException{

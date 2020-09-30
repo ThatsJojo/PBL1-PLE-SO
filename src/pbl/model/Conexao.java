@@ -1,6 +1,7 @@
 package pbl.model;
 import java.io.IOException;
 import java.util.Date;
+import pbl.controller.ArquivoController;
 import pbl.util.Contador;
 
 
@@ -44,21 +45,29 @@ public class Conexao extends Thread implements Comparable{
     
     @Override
     public void run(){
+        if(this.readConexao()){
+            try {
+                this.conectar(ArquivoController.getInstance().getArquivoLeitura());
+            } catch (IOException ex) {}
+        }else{
+            try {
+                this.conectar(ArquivoController.getInstance().getArquivoEscrita());
+            } catch (IOException ex) {}
+        }
         if(!conectado){
             System.out.println("Thread não está conectada a um arquivo");
             return;
         }
         try {
-            if(readConexao()){
-                System.out.println("Thread "+id+" Iniciando operação de leitura em "+arquivo.getNome()+" no tempo: " + Contador.getInstance().getTime()+".");
-                System.out.println("-------------------------------------------------------------------");
-                System.out.println(""+this.getName()+" Iniciou uma leitura no "+arquivo.getNome()+". Conteúdo:");
-                System.out.println("*******************************************************************");
+            if(readConexao()){                
+                System.out.println("----------------------------------------------------------------------------------");
+                System.out.println("Thread "+id+" Iniciando operação de leitura em "+arquivo.getNome()+" no tempo: " + Contador.getInstance().getTime()+". Conteúdo:");
+                System.out.println("**********************************************************************************");
                 System.out.println(arquivo.getConteudo());
-                System.out.println("-------------------------------------------------------------------");
+                System.out.println("----------------------------------------------------------------------------------");
                 Thread.sleep(tempoExecucao*1000);
                 System.out.println("Thread "+id+" finalizando execução no tempo: "+ Contador.getInstance().getTime()+".");
-                System.out.println("-------------------------------------------------------------------");
+                System.out.println("----------------------------------------------------------------------------------");
             }else{
                 System.out.println("Thread "+id+" Iniciando operação de escrita em "+arquivo.getNome()+" no tempo: " + Contador.getInstance().getTime()+".");
                 String texto = arquivo.getConteudo();
