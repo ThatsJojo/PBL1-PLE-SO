@@ -61,7 +61,7 @@ public class Conexao extends Thread implements Comparable{
         try {
             if(readConexao()){                
                 System.out.println("----------------------------------------------------------------------------------");
-                System.out.println("Thread "+id+" Iniciando operação de leitura em "+arquivo.getNome()+" no tempo: " + Contador.getInstance().getTime()+". Conteúdo:");
+                System.out.println("Thread "+id+" Iniciando operação de leitura em "+arquivo.getNome()+" no tempo: " + Contador.getInstance().getTime()+".\nEste é o conteúdo encontrado:");
                 System.out.println("**********************************************************************************");
                 System.out.println(arquivo.getConteudo());
                 System.out.println("----------------------------------------------------------------------------------");

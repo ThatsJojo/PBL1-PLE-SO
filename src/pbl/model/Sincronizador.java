@@ -2,8 +2,6 @@ package pbl.model;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Observable;
-import java.util.Observer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import pbl.controller.ArquivoController;
@@ -28,7 +26,7 @@ public class Sincronizador extends Thread {
     
     @Override
     public void run() {
-        System.out.println("-------------------------------------------------------------------");
+        System.out.println("----------------------------------------------------------------------------------");
         System.out.println("Thread sincronizadora ativa no tempo "+Contador.getInstance().getTime()+"\n");        
         ArrayList<Arquivo> arquivos = ArquivoController.getArquivos();
         arquivos.forEach((arquivo)->{
@@ -51,13 +49,6 @@ public class Sincronizador extends Thread {
         });
         Semaforo.getInstance().up();
         sincronizador = new Sincronizador();
-        System.out.println("-------------------------------------------------------------------");
-    }
-
-    
-//    
-//    @Override
-//    public void update(Observable Arquivo, Object Conteudo) {
-//        conteudo = (String) Conteudo;
-//    }   
+        System.out.println("----------------------------------------------------------------------------------");
+    }  
 }

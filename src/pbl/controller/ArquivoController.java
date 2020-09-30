@@ -76,9 +76,9 @@ public class ArquivoController implements Observer{
 
     @Override
     public void update(Observable arquivo, Object conteudo) {
-        System.out.println("-------------------------------------------------------------------");
-        System.out.println("O " + ((Arquivo)arquivo).getNome()+" foi modificado. A escrita será liberada após a sincronização");
-        System.out.println("-------------------------------------------------------------------");
+        System.out.println("----------------------------------------------------------------------------------");
+        System.out.println("O " + ((Arquivo)arquivo).getNome()+" foi modificado. A escrita será liberada após a \nsincronização. Este é o conteúdo após as modificações:");
+        System.out.println("----------------------------------------------------------------------------------");
         Sincronizador.getInstance().start(); //O Up é feito no sincronizador.
         System.out.println(conteudo);
         try {
@@ -86,7 +86,7 @@ public class ArquivoController implements Observer{
         } catch (IOException ex) {
             System.out.println("Escrita não pôde ser realizada.");
         }
-        System.out.println("-------------------------------------------------------------------");
+        System.out.println("----------------------------------------------------------------------------------");
     }
     
     public boolean arquivoAtualizado(Arquivo arquivo) throws FileNotFoundException{

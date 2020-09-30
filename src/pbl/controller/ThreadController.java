@@ -28,7 +28,7 @@ public class ThreadController {
         filaPronta = new boolean[1];
         filaPronta[0] = false;
         for(int i =0; i<nconexoes;i++){
-            conexoes[i] = new Conexao(i, random.nextInt(2), (5+random.nextInt(6)), (0+random.nextInt(10)));
+            conexoes[i] = new Conexao(i,0 /*random.nextInt(2)*/, (5+random.nextInt(6)), (0+random.nextInt(10)));
         }
         adicionarThreads();
         inicializarThreads();
@@ -50,14 +50,6 @@ public class ThreadController {
                         Thread.sleep(200);
                         a.start();
                         ultima = a;
-//                        if(a.readConexao()){
-//                            a.conectar(ArquivoController.getInstance().getArquivoLeitura());
-//                            a.start();
-//                        }else{
-//                            a.conectar(ArquivoController.getInstance().getArquivoEscrita());                           
-//                            a.start();
-//                            ultima = a;
-//                        }
                     }
                     catch(NoSuchElementException | InterruptedException ex){}
                 }
@@ -81,11 +73,11 @@ public class ThreadController {
                 }
             }
         }
-        System.out.println("-------------------------------------------------------------------------");
+        System.out.println("----------------------------------------------------------------------------------");
         for(Conexao c: conexoes){
             System.out.println("Conexão: "+c.getInternalID()+"   Tempo de chegada: "+c.getTempoInicio()+"     Tempo de execução: "+c.getTempoExecucao()+"     Escrita: "+c.getReadOrWrite());
         }
-        System.out.println("-------------------------------------------------------------------------\n");
+        System.out.println("----------------------------------------------------------------------------------\n");
         
         new Thread(){
             @Override
@@ -108,9 +100,9 @@ public class ThreadController {
                     }
                 }
                 filaPronta[0]=true;
-                System.out.println("-----------------------------------------------------");
-                System.out.println("     Todas as conexões foram adicionados à fila");
-                System.out.println("-----------------------------------------------------");
+                System.out.println("----------------------------------------------------------------------------------");
+                System.out.println("                Todas as conexões foram adicionados à fila               ");
+                System.out.println("----------------------------------------------------------------------------------");
             }
         }.start();
     }
