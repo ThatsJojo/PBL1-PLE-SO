@@ -5,3 +5,4 @@ manifest.mf
 /Escalonador/nbproject/private/
 /build/
 *.txt
+/dist/

@@ -1,13 +1,9 @@
 package pbl.view;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import pbl.controller.ArquivoController;
 import pbl.controller.ThreadController;
 import pbl.util.Contador;
-import pbl.util.NotTrackedFileException;
-
 
 public class PBLPLESO {
     public static void main(String[] args) {

@@ -12,7 +12,13 @@ public class Contador extends Thread{
         this.horas = 0;
     }
     
-    
+    public static synchronized Contador getInstance(){
+        if(clock == null){
+            clock = new Contador();
+            clock.start();
+        }
+        return clock;
+    }
 
     @Override
     public void run() {
@@ -44,11 +50,5 @@ public class Contador extends Thread{
         return ""+horas+"h - "+minutos+"min - "+segundos+"s";
     }
     
-    public static synchronized Contador getInstance(){
-        if(clock == null){
-            clock = new Contador();
-            clock.start();
-        }
-        return clock;
-    }
+    
 }

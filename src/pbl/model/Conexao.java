@@ -63,9 +63,11 @@ public class Conexao extends Thread implements Comparable{
                 String texto = arquivo.getConteudo();
                 Date d = new Date();
                 String data = ""+d.getHours()+"h "+d.getMinutes()+"min "+d.getSeconds()+" do dia "+d.getDay()+" no mês "+d.getMonth()+" do ano de "+d.getYear();
-                texto = texto + "A Thread "+id+" iniciou uma operação de escrita no arquivo \""+arquivo.getNome()+"\" no instante "+d+". - Tempo de execução"+Contador.getInstance().getTime()+".\n";
+                texto = texto + "A Thread "+id+" iniciou uma operação de escrita no arquivo \""+arquivo.getNome()+"\" no instante "+data+". - Tempos de execução"+Contador.getInstance().getTime()+". Tempo de chegada: "+this.tempoInicio+". Tempo de Início: "+Contador.getInstance().getTime()+"\n";
                 Thread.sleep(tempoExecucao*1000);
-                texto = texto + "A Thread "+id+" finalizou uma operação de escrita no arquivo \""+arquivo.getNome()+"\" no instante "+d+". - Tempo de execução"+Contador.getInstance().getTime()+".\n";
+                d = new Date();
+                data = ""+d.getHours()+"h "+d.getMinutes()+"min "+d.getSeconds()+" do dia "+d.getDay()+" no mês "+d.getMonth()+" do ano de "+d.getYear();
+                texto = texto + "A Thread "+id+" finalizou uma operação de escrita no arquivo \""+arquivo.getNome()+"\" no instante "+data+". - Tempo de execução"+Contador.getInstance().getTime()+".\n";
                 System.out.println("Thread "+id+" finalizando execução no tempo: "+ Contador.getInstance().getTime()+".");
                 arquivo.setConteudo(texto);
             }

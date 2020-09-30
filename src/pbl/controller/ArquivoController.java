@@ -14,7 +14,7 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.stream.Stream;
 import pbl.model.Arquivo;
-import pbl.util.Contador;
+import pbl.model.Sincronizador;
 import pbl.util.Semaforo;
 
     
@@ -22,8 +22,6 @@ public class ArquivoController implements Observer{
     private static ArrayList<Arquivo> arquivos;
     private static IOController ioController;
     private static ArquivoController arquivoController;
-    
-   
     
     private ArquivoController(int nArquivos) throws IOException{
         arquivos = new ArrayList<>(nArquivos);
@@ -35,33 +33,29 @@ public class ArquivoController implements Observer{
                 ArquivoController.ioController.escreverArquivo("Arquivo"+i+".txt", "");
             else
                 conteudo = ArquivoController.ioController.lerArquivo("Arquivo"+i+".txt");
-            Arquivo a = new Arquivo("Arquivo"+i+".txt",ArquivoController.ioController.lastModify("Arquivo"+i+".txt"));
-            System.out.println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\nxxxxxxxxxxxxxxxxxxxxn\n"+i+"\nCONSTRUTOR CONTROLLER");
-            a.setConteudo(conteudo);
+            Arquivo a = new Arquivo(conteudo,"Arquivo"+i+".txt",ArquivoController.ioController.lastModify("Arquivo"+i+".txt"));
             arquivos.add(a);
         }
     }
     
-    private static void monitorarArquivos(){
-        arquivos.forEach((a) -> {
-            a.addObserver(arquivoController);
+    private static void cadastrarObservers(){
+        arquivos.forEach((arquivo)->{
+            arquivo.addObserver(Sincronizador.getInstance());
+            arquivo.addObserver(arquivoController);
         });
     }
    
     public static synchronized ArquivoController getInstance() throws IOException{
         if(arquivoController == null){
             arquivoController = new ArquivoController(3);
-            monitorarArquivos();
-            System.out.println("Arquivos monitatrados");
-            return arquivoController;
+            cadastrarObservers();
         }
-        System.out.println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\nxxxxxxxxxxxxxxxxxxxxn\n\nxxxxxxxxxxxx");
         return arquivoController;
     }
     
  
     public String lerArquivo (String nome) throws NotTrackedFileException, FileNotFoundException, IOException{
-        if(!arquivos.contains(new Arquivo(nome, 1))){
+        if(!arquivos.contains(new Arquivo("",nome, 1))){
             throw new NotTrackedFileException();
         }
         return ArquivoController.ioController.lerArquivo(nome);
@@ -71,7 +65,7 @@ public class ArquivoController implements Observer{
         for(Arquivo a: arquivos){
             if(a.getNome().equals(nome)){
                 ArquivoController.ioController.escreverArquivo(nome, data);
-                a.setConteudo(data);
+                a.setConteudoAssincrono(data);
                 a.setLastModify(ArquivoController.ioController.lastModify(nome));
                 return;
             }
@@ -80,19 +74,21 @@ public class ArquivoController implements Observer{
     }
 
     @Override
-    public void update(Observable o, Object o1) {
-        System.out.println("------------------------UPDATE-------------------------");
-        System.out.println("O arquivo "+ ((Arquivo)o).getNome()+" Foi modificado no tempo +"+Contador.getInstance().getTime());
-        System.out.println(((Arquivo)o).getConteudo());
-        System.out.println("------------------------UPDATE-------------------------");
-        Semaforo.getInstance().up();
-        
+    public void update(Observable arquivo, Object conteudo) {
+        System.out.println("\n-----Recurso Liberado: " + ((Arquivo)arquivo).getNome()+" modificado");
+        System.out.println("---------------Recurso Liberado---------------");
+        Sincronizador.getInstance().start(); //O Up é feito no sincronizador.
+        System.out.println(conteudo);
+        try {
+            ioController.escreverArquivo(((Arquivo)arquivo).getNome(), (String) conteudo);
+        } catch (IOException ex) {
+            System.out.println("Escrita não pôde ser realizada.");
+        }
+        System.out.println("----------------------------------------------\n");
     }
     
     public Arquivo getArquivoEscrita(){
-        System.out.println("-------------------Antes o Down------------------");
         Semaforo.getInstance().down();
-        System.out.println("-------------------Fez o Down------------------");
         return arquivos.get(0);
         
     };
@@ -100,8 +96,15 @@ public class ArquivoController implements Observer{
     public Arquivo getArquivoLeitura(){
         return arquivos.get(1);
     };
+    
+    public static ArrayList<Arquivo> getArquivos() {
+        return arquivos;
+    }
 
-
+    public static long getLastModify(String nome) throws FileNotFoundException{
+        return ioController.lastModify(nome);
+    }
+    
     //Responsável pela edição de arquivos texto
     private class IOController {
         public String lerArquivo(String nome) throws FileNotFoundException, IOException{

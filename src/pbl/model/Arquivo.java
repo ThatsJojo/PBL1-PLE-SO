@@ -13,7 +13,8 @@ public class Arquivo extends Observable{
     private String conteudo;
     private final LinkedList<Observer> clientes;
     
-    public Arquivo(String nome, long lastModify){
+    public Arquivo(String conteudo, String nome, long lastModify){
+        this.conteudo = conteudo;
         this.nome = nome;
         this.lastModify = lastModify;
         this.clientes = new LinkedList<>();
@@ -24,19 +25,27 @@ public class Arquivo extends Observable{
     }
     
     public void setLastModify(long lastModify) {
-        this.setChanged();
+        this.lastModify = lastModify;
     }
 
     public String getConteudo() {
         return conteudo;
     }
 
+    @Override
+    public synchronized void addObserver(Observer obsrvr) {
+        clientes.add(obsrvr);
+    }
+
+    public void setConteudoAssincrono(String conteudo){
+        this.conteudo = conteudo;
+    }
+    
     public void setConteudo(String conteudo) throws IOException {
         this.conteudo = conteudo;
-        System.out.println("----------Vai notificar os observers------");
-        ArquivoController.getInstance().update(this, conteudo);
-        System.out.println("dpois noticicar");
-        //this.lastModify = lastModify;
+        clientes.forEach((o) -> {
+            o.update(this, conteudo);
+        });
     }
 
     @Override
@@ -56,8 +65,4 @@ public class Arquivo extends Observable{
         hash = 97 * hash + Objects.hashCode(this.nome);
         return hash;
     }
-    
-    
-     
-    
 }

@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import pbl.model.Conexao;
 import pbl.util.Contador;
 
@@ -26,7 +28,7 @@ public class ThreadController {
         int nconexoes = 3+random.nextInt(17);
         conexoes = new Conexao[nconexoes];
         filaPronta = new boolean[1];
-        filaPronta[0] = true;
+        filaPronta[0] = false;
         for(int i =0; i<nconexoes;i++){
             conexoes[i] = new Conexao(i, random.nextInt(2), (5+random.nextInt(6)), (0+random.nextInt(10)));
         }
@@ -43,8 +45,9 @@ public class ThreadController {
         new Thread(){
             @Override
             public void run(){
-                while(filaPronta[0]||!(conexoesProntas.isEmpty())){
-                    try{
+                Conexao ultima = null;
+                while(!filaPronta[0]||!(conexoesProntas.isEmpty())){
+                    try{    
                         Conexao a = conexoesProntas.removeFirst();
                         Thread.sleep(200);
                         if(a.readConexao()){
@@ -53,10 +56,15 @@ public class ThreadController {
                         }else{
                             a.conectar(ArquivoController.getInstance().getArquivoEscrita());                           
                             a.start();
+                            ultima = a;
                         }
                     }
                     catch(NoSuchElementException | InterruptedException | IOException ex){}
                 }
+                try {
+                    Thread.sleep((ultima.getTempoExecucao()+2)*1000);
+                    Contador.getInstance().interrupt();
+                } catch (InterruptedException | NullPointerException ex) {}
             }
         }.start();
     }
@@ -73,10 +81,11 @@ public class ThreadController {
                 }
             }
         }
-        
+        System.out.println("-------------------------------------------------------------------------");
         for(Conexao c: conexoes){
-            System.out.println("Conexão "+c.getInternalID()+"   Tempo de chegada "+c.getTempoInicio()+"     Tempo de execução "+c.getTempoExecucao()+" Leitura: "+c.getReadOrWrite());
+            System.out.println("Conexão: "+c.getInternalID()+"   Tempo de chegada "+c.getTempoInicio()+"     Tempo de execução: "+c.getTempoExecucao()+"     Leitura: "+c.getReadOrWrite());
         }
+        System.out.println("-------------------------------------------------------------------------\n");
         
         new Thread(){
             @Override
@@ -98,18 +107,11 @@ public class ThreadController {
                         System.out.println("Erro ao inicializar conecções: "+ex);
                     }
                 }
-                filaPronta[0]=false;
+                filaPronta[0]=true;
                 System.out.println("-----------------------------------------------------");
                 System.out.println("     Todas as conecções foram adicionados à fila");
                 System.out.println("-----------------------------------------------------");
             }
         }.start();
     }
-    
-    public void threadEscritaFinalizada(Conexao t, String conteudo){
-        if(t.readConexao()){
-            
-        }
-    }
-  
 }
