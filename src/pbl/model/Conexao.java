@@ -1,10 +1,6 @@
 package pbl.model;
 import java.io.IOException;
 import java.util.Date;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import pbl.util.Contador;
 
 
@@ -55,26 +51,29 @@ public class Conexao extends Thread implements Comparable{
         try {
             if(readConexao()){
                 System.out.println("Thread "+id+" Iniciando operação de leitura em "+arquivo.getNome()+" no tempo: " + Contador.getInstance().getTime()+".");
+                System.out.println("-------------------------------------------------------------------");
+                System.out.println(""+this.getName()+" Iniciou uma leitura no "+arquivo.getNome()+". Conteúdo:");
+                System.out.println("*******************************************************************");
                 System.out.println(arquivo.getConteudo());
+                System.out.println("-------------------------------------------------------------------");
                 Thread.sleep(tempoExecucao*1000);
                 System.out.println("Thread "+id+" finalizando execução no tempo: "+ Contador.getInstance().getTime()+".");
+                System.out.println("-------------------------------------------------------------------");
             }else{
                 System.out.println("Thread "+id+" Iniciando operação de escrita em "+arquivo.getNome()+" no tempo: " + Contador.getInstance().getTime()+".");
                 String texto = arquivo.getConteudo();
                 Date d = new Date();
                 String data = ""+d.getHours()+"h "+d.getMinutes()+"min "+d.getSeconds()+" do dia "+d.getDay()+" no mês "+d.getMonth()+" do ano de "+d.getYear();
-                texto = texto + "A Thread "+id+" iniciou uma operação de escrita no arquivo \""+arquivo.getNome()+"\" no instante "+data+". - Tempos de execução"+Contador.getInstance().getTime()+". Tempo de chegada: "+this.tempoInicio+". Tempo de Início: "+Contador.getInstance().getTime()+"\n";
+                texto = texto + "   -> A Thread "+id+" iniciou uma operação de escrita no arquivo \""+arquivo.getNome()+"\" no instante "+data+". - Tempos de execução"+Contador.getInstance().getTime()+". Tempo de chegada: "+this.tempoInicio+". Tempo de Início: "+Contador.getInstance().getTime()+"\n";
                 Thread.sleep(tempoExecucao*1000);
                 d = new Date();
                 data = ""+d.getHours()+"h "+d.getMinutes()+"min "+d.getSeconds()+" do dia "+d.getDay()+" no mês "+d.getMonth()+" do ano de "+d.getYear();
-                texto = texto + "A Thread "+id+" finalizou uma operação de escrita no arquivo \""+arquivo.getNome()+"\" no instante "+data+". - Tempo de execução"+Contador.getInstance().getTime()+".\n";
+                texto = texto + "   -> A Thread "+id+" finalizou uma operação de escrita no arquivo \""+arquivo.getNome()+"\" no instante "+data+". - Tempo de execução"+Contador.getInstance().getTime()+".\n";
                 System.out.println("Thread "+id+" finalizando execução no tempo: "+ Contador.getInstance().getTime()+".");
                 arquivo.setConteudo(texto);
             }
         } catch (InterruptedException ex) {
-            
         } catch (IOException ex) {
-            Logger.getLogger(Conexao.class.getName()).log(Level.SEVERE, null, ex);
         }
         
     }

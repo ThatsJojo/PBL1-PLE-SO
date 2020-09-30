@@ -25,7 +25,7 @@ public class ThreadController {
     private ThreadController() {
         Random random = new Random();
         conexoesProntas = new LinkedList<>();
-        int nconexoes = 3+random.nextInt(17);
+        int nconexoes = 3+random.nextInt(8);
         conexoes = new Conexao[nconexoes];
         filaPronta = new boolean[1];
         filaPronta[0] = false;
@@ -62,7 +62,7 @@ public class ThreadController {
                     catch(NoSuchElementException | InterruptedException | IOException ex){}
                 }
                 try {
-                    Thread.sleep((ultima.getTempoExecucao()+2)*1000);
+                    Thread.sleep((ultima.getTempoExecucao()+4)*1000);
                     Contador.getInstance().interrupt();
                 } catch (InterruptedException | NullPointerException ex) {}
             }
@@ -83,7 +83,7 @@ public class ThreadController {
         }
         System.out.println("-------------------------------------------------------------------------");
         for(Conexao c: conexoes){
-            System.out.println("Conexão: "+c.getInternalID()+"   Tempo de chegada "+c.getTempoInicio()+"     Tempo de execução: "+c.getTempoExecucao()+"     Leitura: "+c.getReadOrWrite());
+            System.out.println("Conexão: "+c.getInternalID()+"   Tempo de chegada: "+c.getTempoInicio()+"     Tempo de execução: "+c.getTempoExecucao()+"     Escrita: "+c.getReadOrWrite());
         }
         System.out.println("-------------------------------------------------------------------------\n");
         

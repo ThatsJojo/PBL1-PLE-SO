@@ -5,7 +5,6 @@ import java.util.LinkedList;
 import java.util.Objects;
 import java.util.Observable;
 import java.util.Observer;
-import pbl.controller.ArquivoController;
 
 public class Arquivo extends Observable{
     private final String nome;
