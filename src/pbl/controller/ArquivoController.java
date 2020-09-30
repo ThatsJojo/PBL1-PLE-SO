@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Random;
 import java.util.stream.Stream;
 import pbl.model.Arquivo;
 import pbl.model.Sincronizador;
@@ -87,14 +88,29 @@ public class ArquivoController implements Observer{
         System.out.println("----------------------------------------------\n");
     }
     
+    public boolean arquivoAtualizado(Arquivo arquivo) throws FileNotFoundException{
+        return (arquivo.getLastModify()==getLastModify(arquivo.getNome()));
+    }
+    
     public Arquivo getArquivoEscrita(){
         Semaforo.getInstance().down();
-        return arquivos.get(0);
-        
+        Arquivo retorno = arquivos.get(new Random().nextInt(3));
+        retorno.setEscrevendo(true);
+        return retorno;
     };
     
     public Arquivo getArquivoLeitura(){
-        return arquivos.get(1);
+        while(true){
+            for (Arquivo arquivo : arquivos) {
+                try {
+                    if(this.arquivoAtualizado(arquivo)&&!arquivo.taEscrevendo())
+                        return arquivo;
+                } catch (FileNotFoundException ex) {}
+            }
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException ex) {}
+        }
     };
     
     public static ArrayList<Arquivo> getArquivos() {

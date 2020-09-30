@@ -21,6 +21,7 @@ public class Semaforo{
         while(true){
             if(flag>0){
                 flag--;
+                System.out.println("foi feito um down");
                 return;
             }try {
                 Thread.sleep(200);
@@ -29,8 +30,10 @@ public class Semaforo{
     }
     
     public void up(){
-        if(flag<resources)
+        if(flag<resources){
             flag++;
+            System.out.println("Foi feito um up");
+        }
     }
     
 }

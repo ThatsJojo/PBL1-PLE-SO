@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import pbl.model.Conexao;
 import pbl.util.Contador;
 
@@ -93,15 +91,15 @@ public class ThreadController {
                 int idConexao=0;
                 while((idConexao<nconexoes)&&(Contador.getInstance().getAbsoluteTime()<=conexoes[nconexoes-1].getTempoInicio())){
                     try {
-                        if(conexoes[idConexao].getTempoInicio() == Contador.getInstance().getAbsoluteTime()){
-                            do{
+                        do{
+                            if(conexoes[idConexao].getTempoInicio() == Contador.getInstance().getAbsoluteTime()){
                                 System.out.println("A Conexão: "+conexoes[idConexao]
                                         .getInternalID()+" foi  adicionada à fila de execução tempo: "
                                         +Contador.getInstance().getAbsoluteTime());
                                 conexoesProntas.add(conexoes[idConexao]);
                                 idConexao++;
-                            }while((idConexao<nconexoes)&&conexoes[idConexao].getInternalID()==Contador.getInstance().getAbsoluteTime());
-                        }
+                            }
+                        }while((idConexao<nconexoes)&&conexoes[idConexao].getInternalID()==Contador.getInstance().getAbsoluteTime());
                         Thread.sleep(200);
                     } catch (InterruptedException ex) {
                         System.out.println("Erro ao inicializar conecções: "+ex);
@@ -109,7 +107,7 @@ public class ThreadController {
                 }
                 filaPronta[0]=true;
                 System.out.println("-----------------------------------------------------");
-                System.out.println("     Todas as conecções foram adicionados à fila");
+                System.out.println("     Todas as conexões foram adicionados à fila");
                 System.out.println("-----------------------------------------------------");
             }
         }.start();

@@ -10,7 +10,9 @@ public class Arquivo extends Observable{
     private final String nome;
     private long lastModify;
     private String conteudo;
+    private boolean escrevendo;
     private final LinkedList<Observer> clientes;
+    
     
     public Arquivo(String conteudo, String nome, long lastModify){
         this.conteudo = conteudo;
@@ -52,6 +54,14 @@ public class Arquivo extends Observable{
         if(o instanceof Arquivo)
             return ((Arquivo) o).nome.equals(this.nome);
         return false;
+    }
+    
+    public boolean taEscrevendo() {
+        return escrevendo;
+    }
+
+    public void setEscrevendo(boolean escrevendo) {
+        this.escrevendo = escrevendo;
     }
 
     public String getNome() {
