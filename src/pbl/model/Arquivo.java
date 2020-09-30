@@ -21,12 +21,8 @@ public class Arquivo extends Observable{
         return lastModify;
     }
     
-    
-
     public void setLastModify(long lastModify) {
         this.setChanged();
-        this.notifyObservers();
-        this.lastModify = lastModify;
     }
 
     public String getConteudo() {
@@ -35,6 +31,9 @@ public class Arquivo extends Observable{
 
     public void setConteudo(String conteudo) {
         this.conteudo = conteudo;
+        System.out.println("----------Vai notificar os observers------");
+        this.notifyObservers();
+        this.lastModify = lastModify;
     }
 
     @Override

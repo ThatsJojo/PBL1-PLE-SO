@@ -10,22 +10,20 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.stream.Stream;
 import pbl.model.Arquivo;
+import pbl.util.Contador;
+import pbl.util.Semaforo;
 
     
-public class ArquivoController {
+public class ArquivoController implements Observer{
     private final ArrayList<Arquivo> arquivos;
     private static IOController ioController;
     private static ArquivoController arquivoController;
     
-    public static synchronized ArquivoController getInstance() throws IOException{
-        if(arquivoController == null){
-            arquivoController = new ArquivoController(3);
-            return arquivoController;
-        }
-        return arquivoController;
-    }
+   
     
     private ArquivoController(int nArquivos) throws IOException{
         arquivos = new ArrayList<>(nArquivos);
@@ -39,9 +37,20 @@ public class ArquivoController {
                 conteudo = ArquivoController.ioController.lerArquivo("Arquivo"+i+".txt");
             Arquivo a = new Arquivo("Arquivo"+i+".txt",ArquivoController.ioController.lastModify("Arquivo"+i+".txt"));
             a.setConteudo(conteudo);
+            a.addObserver(this);
             arquivos.add(a);
         }
     }
+    
+    public static synchronized ArquivoController getInstance() throws IOException{
+        if(arquivoController == null){
+            arquivoController = new ArquivoController(3);
+            return arquivoController;
+        }
+        return arquivoController;
+    }
+    
+    
     
     public String lerArquivo (String nome) throws NotTrackedFileException, FileNotFoundException, IOException{
         if(!arquivos.contains(new Arquivo(nome, 1))){
@@ -61,9 +70,31 @@ public class ArquivoController {
         }
         throw new NotTrackedFileException();
     }
+
+    @Override
+    public void update(Observable o, Object o1) {
+        System.out.println("------------------------UPDATE-------------------------");
+        System.out.println("O arquivo "+ ((Arquivo)o).getNome()+" Foi modificado no tempo +"+Contador.getInstance().getTime());
+        System.out.println(((Arquivo)o).getConteudo());
+        System.out.println("------------------------UPDATE-------------------------");
+        Semaforo.getInstance().up();
+        
+    }
     
+    public Arquivo getArquivoEscrita(){
+        System.out.println("-------------------Antes o Down------------------");
+        Semaforo.getInstance().down();
+        System.out.println("-------------------Fez o Down------------------");
+        return arquivos.get(0);
+        
+    };
     
-    
+    public Arquivo getArquivoLeitura(){
+        return arquivos.get(1);
+    };
+
+
+    //Responsável pela edição de arquivos texto
     private class IOController {
         public String lerArquivo(String nome) throws FileNotFoundException, IOException{
             File arq = new File(nome);

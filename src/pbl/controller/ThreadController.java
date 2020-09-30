@@ -9,7 +9,7 @@ import pbl.util.Contador;
 
 public class ThreadController {
     private static ArquivoController arquivoController;
-    private static Conexao[] Conexoes;
+    private static Conexao[] conexoes;
     private static LinkedList<Conexao> conexoesProntas;
     private static boolean[] filaPronta;
     private static ThreadController instance;
@@ -23,12 +23,12 @@ public class ThreadController {
     private ThreadController() {
         Random random = new Random();
         conexoesProntas = new LinkedList<>();
-        int nConexoes = 3+random.nextInt(17);
-        Conexoes = new Conexao[nConexoes];
+        int nconexoes = 3+random.nextInt(17);
+        conexoes = new Conexao[nconexoes];
         filaPronta = new boolean[1];
         filaPronta[0] = true;
-        for(int i =0; i<nConexoes;i++){
-            Conexoes[i] = new Conexao(i, random.nextInt(1), (5+random.nextInt(6)), (0+random.nextInt(10)));
+        for(int i =0; i<nconexoes;i++){
+            conexoes[i] = new Conexao(i, random.nextInt(2), (5+random.nextInt(6)), (0+random.nextInt(10)));
         }
         adicionarThreads();
         inicializarThreads();
@@ -45,50 +45,53 @@ public class ThreadController {
             public void run(){
                 while(filaPronta[0]||!(conexoesProntas.isEmpty())){
                     try{
-                        conexoesProntas.removeFirst().start();
-                        
-                        
+                        Conexao a = conexoesProntas.removeFirst();
+                        Thread.sleep(200);
+                        if(a.readConexao()){
+                            a.conectar(ArquivoController.getInstance().getArquivoLeitura());
+                            a.start();
+                        }else{
+                            a.conectar(ArquivoController.getInstance().getArquivoEscrita());
+                            a.start();
+                        }
                     }
-                    catch(NoSuchElementException ex){
-                }
+                    catch(NoSuchElementException | InterruptedException | IOException ex){}
                 }
             }
         }.start();
-        
-        
     }
     
     
     private static void adicionarThreads(){
-        int nConexoes = Conexoes.length;
-        for(int i=0;i<nConexoes;i++){
-            for(int j=0;j<nConexoes;j++){
-                if(Conexoes[j].compareTo(Conexoes[i])>0){
-                    Conexao temp = Conexoes[i];
-                    Conexoes[i] = Conexoes[j];
-                    Conexoes[j]=temp;
+        int nconexoes = conexoes.length;
+        for(int i=0;i<nconexoes;i++){
+            for(int j=0;j<nconexoes;j++){
+                if(conexoes[j].compareTo(conexoes[i])>0){
+                    Conexao temp = conexoes[i];
+                    conexoes[i] = conexoes[j];
+                    conexoes[j]=temp;
                 }
             }
         }
         
-        for(Conexao c: Conexoes){
-            System.out.println("Conexão "+c.getInternalID()+"   Tempo de chegada "+c.getTempoInicio()+"     Tempo de execução "+c.getTempoExecucao());
+        for(Conexao c: conexoes){
+            System.out.println("Conexão "+c.getInternalID()+"   Tempo de chegada "+c.getTempoInicio()+"     Tempo de execução "+c.getTempoExecucao()+" Leitura: "+c.getReadOrWrite());
         }
         
         new Thread(){
             @Override
             public void run(){
                 int idConexao=0;
-                while((idConexao<nConexoes)&&(Contador.getInstance().getAbsoluteTime()<=Conexoes[nConexoes-1].getTempoInicio())){
+                while((idConexao<nconexoes)&&(Contador.getInstance().getAbsoluteTime()<=conexoes[nconexoes-1].getTempoInicio())){
                     try {
-                        if(Conexoes[idConexao].getTempoInicio() == Contador.getInstance().getAbsoluteTime()){
+                        if(conexoes[idConexao].getTempoInicio() == Contador.getInstance().getAbsoluteTime()){
                             do{
-                                System.out.println("A Conexão: "+Conexoes[idConexao]
+                                System.out.println("A Conexão: "+conexoes[idConexao]
                                         .getInternalID()+" foi  adicionada à fila de execução tempo: "
                                         +Contador.getInstance().getAbsoluteTime());
-                                conexoesProntas.add(Conexoes[idConexao]);
+                                conexoesProntas.add(conexoes[idConexao]);
                                 idConexao++;
-                            }while((idConexao<nConexoes)&&Conexoes[idConexao].getInternalID()==Contador.getInstance().getAbsoluteTime());
+                            }while((idConexao<nconexoes)&&conexoes[idConexao].getInternalID()==Contador.getInstance().getAbsoluteTime());
                         }
                         Thread.sleep(200);
                     } catch (InterruptedException ex) {
@@ -101,6 +104,12 @@ public class ThreadController {
                 System.out.println("-----------------------------------------------------");
             }
         }.start();
+    }
+    
+    public void threadEscritaFinalizada(Conexao t, String conteudo){
+        if(t.readConexao()){
+            
+        }
     }
   
 }

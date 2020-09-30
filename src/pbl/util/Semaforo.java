@@ -5,19 +5,32 @@ public class Semaforo{
     private final int resources;
     private static Semaforo uniqueInstance;
     
-    public Semaforo(int resources){
+    private Semaforo(int resources){
         this.resources = resources;
+        flag = resources;
+    }
+    
+    public static synchronized Semaforo getInstance(){
+        if(uniqueInstance == null){
+            uniqueInstance = new Semaforo(1);
+        }
+        return uniqueInstance;
     }
     
     public void down(){
         while(true){
-            if(flag>0)
+            if(flag>0){
                 flag--;
+                return;
+            }try {
+                Thread.sleep(200);
+            } catch (InterruptedException ex) {}
         }
     }
     
     public void up(){
-        flag++;
+        if(flag<resources)
+            flag++;
     }
     
 }
