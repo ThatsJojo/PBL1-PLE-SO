@@ -51,7 +51,7 @@ public class ThreadController {
                             a.conectar(ArquivoController.getInstance().getArquivoLeitura());
                             a.start();
                         }else{
-                            a.conectar(ArquivoController.getInstance().getArquivoEscrita());
+                            a.conectar(ArquivoController.getInstance().getArquivoEscrita());                           
                             a.start();
                         }
                     }

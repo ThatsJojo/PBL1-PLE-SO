@@ -1,9 +1,11 @@
 package pbl.model;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Objects;
 import java.util.Observable;
 import java.util.Observer;
+import pbl.controller.ArquivoController;
 
 public class Arquivo extends Observable{
     private final String nome;
@@ -29,11 +31,12 @@ public class Arquivo extends Observable{
         return conteudo;
     }
 
-    public void setConteudo(String conteudo) {
+    public void setConteudo(String conteudo) throws IOException {
         this.conteudo = conteudo;
         System.out.println("----------Vai notificar os observers------");
-        this.notifyObservers();
-        this.lastModify = lastModify;
+        ArquivoController.getInstance().update(this, conteudo);
+        System.out.println("dpois noticicar");
+        //this.lastModify = lastModify;
     }
 
     @Override

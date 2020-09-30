@@ -1,7 +1,10 @@
 package pbl.model;
+import java.io.IOException;
 import java.util.Date;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import pbl.util.Contador;
 
 
@@ -67,7 +70,9 @@ public class Conexao extends Thread implements Comparable{
                 arquivo.setConteudo(texto);
             }
         } catch (InterruptedException ex) {
-            System.out.println("Thread "+id+" foi interrompida no tempo "+ Contador.getInstance().getTime()+".");
+            
+        } catch (IOException ex) {
+            Logger.getLogger(Conexao.class.getName()).log(Level.SEVERE, null, ex);
         }
         
     }

@@ -19,7 +19,7 @@ import pbl.util.Semaforo;
 
     
 public class ArquivoController implements Observer{
-    private final ArrayList<Arquivo> arquivos;
+    private static ArrayList<Arquivo> arquivos;
     private static IOController ioController;
     private static ArquivoController arquivoController;
     
@@ -36,22 +36,30 @@ public class ArquivoController implements Observer{
             else
                 conteudo = ArquivoController.ioController.lerArquivo("Arquivo"+i+".txt");
             Arquivo a = new Arquivo("Arquivo"+i+".txt",ArquivoController.ioController.lastModify("Arquivo"+i+".txt"));
+            System.out.println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\nxxxxxxxxxxxxxxxxxxxxn\n"+i+"\nCONSTRUTOR CONTROLLER");
             a.setConteudo(conteudo);
-            a.addObserver(this);
             arquivos.add(a);
         }
     }
     
+    private static void monitorarArquivos(){
+        arquivos.forEach((a) -> {
+            a.addObserver(arquivoController);
+        });
+    }
+   
     public static synchronized ArquivoController getInstance() throws IOException{
         if(arquivoController == null){
             arquivoController = new ArquivoController(3);
+            monitorarArquivos();
+            System.out.println("Arquivos monitatrados");
             return arquivoController;
         }
+        System.out.println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\nxxxxxxxxxxxxxxxxxxxxn\n\nxxxxxxxxxxxx");
         return arquivoController;
     }
     
-    
-    
+ 
     public String lerArquivo (String nome) throws NotTrackedFileException, FileNotFoundException, IOException{
         if(!arquivos.contains(new Arquivo(nome, 1))){
             throw new NotTrackedFileException();
