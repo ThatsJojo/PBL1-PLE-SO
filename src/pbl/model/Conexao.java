@@ -2,6 +2,7 @@ package pbl.model;
 import java.io.IOException;
 import java.util.Date;
 import pbl.controller.ArquivoController;
+import pbl.controller.ThreadController;
 import pbl.util.Contador;
 
 
@@ -84,7 +85,7 @@ public class Conexao extends Thread implements Comparable{
         } catch (InterruptedException ex) {
         } catch (IOException ex) {
         }
-        
+        ThreadController.processoFinalizado();
     }
     
     public boolean readConexao(){

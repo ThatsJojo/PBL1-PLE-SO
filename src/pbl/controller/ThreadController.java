@@ -13,6 +13,8 @@ public class ThreadController {
     private static LinkedList<Conexao> conexoesProntas;
     private static boolean[] filaPronta;
     private static ThreadController instance;
+    private static int processosFinalizados;
+    private static int nConexoes;
     
     public static synchronized ThreadController getInstance(){
         if(instance == null)
@@ -23,12 +25,12 @@ public class ThreadController {
     private ThreadController() {
         Random random = new Random();
         conexoesProntas = new LinkedList<>();
-        int nconexoes = 3+random.nextInt(8);
-        conexoes = new Conexao[nconexoes];
+        nConexoes = 3+random.nextInt(8);
+        conexoes = new Conexao[nConexoes];
         filaPronta = new boolean[1];
         filaPronta[0] = false;
-        for(int i =0; i<nconexoes;i++){
-            conexoes[i] = new Conexao(i,0 /*random.nextInt(2)*/, (5+random.nextInt(6)), (0+random.nextInt(10)));
+        for(int i =0; i<nConexoes;i++){
+            conexoes[i] = new Conexao(i,random.nextInt(2), (5+random.nextInt(6)), (0+random.nextInt(10)));
         }
         adicionarThreads();
         inicializarThreads();
@@ -37,6 +39,14 @@ public class ThreadController {
         } catch (IOException ex) {
             System.out.println("Problema na criação dos arquivos");
         }
+    }
+
+    public static int getProcessosFinalizados() {
+        return processosFinalizados;
+    }
+
+    public static void processoFinalizado() {
+        processosFinalizados++;
     }
     
     private static void inicializarThreads(){
@@ -55,6 +65,9 @@ public class ThreadController {
                 }
                 try {
                     Thread.sleep((ultima.getTempoExecucao()+4)*1000);
+                    while(processosFinalizados<nConexoes){
+                        Thread.sleep(200);
+                    }
                     Contador.getInstance().interrupt();
                 } catch (InterruptedException | NullPointerException ex) {}
             }
